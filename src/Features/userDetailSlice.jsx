@@ -30,6 +30,39 @@ export const showUser = createAsyncThunk('showUser', async()=>{
     }
 })
 
+//delete action
+export const deleteUser = createAsyncThunk('deleteUser', async(id)=>{
+    const response = await fetch(`https://64b02baac60b8f941af55987.mockapi.io/crud/${id}`,{
+        method:"DELETE"
+    });
+    try{
+        const result = await response.json();
+        console.log(result)
+        return result;
+    }catch(error){
+        return error;
+    }
+})
+
+//update action
+export const updateUser = createAsyncThunk('updateUser', async(data)=>{
+    console.log('updated data', data)
+    const response = await fetch(`https://64b02baac60b8f941af55987.mockapi.io/crud/${data.id}`,{
+        method:"PUT",
+        headers:{
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
+    try{
+        const result = await response.json();
+        console.log(result)
+        return result;
+    }catch(error){
+        return error;
+    }
+})
+
 export const userDetail = createSlice({
     name:'userDetail',
     initialState:{
@@ -55,10 +88,49 @@ export const userDetail = createSlice({
         [showUser.fulfilled]:(state, action)=>{
             state.loading = false
             state.users = action.payload
+                
         },
         [showUser.rejected]:(state, action)=>{
             state.loading = false
             state.error = action
+        },
+        [deleteUser.pending]:(state)=>{
+            state.loading = true
+        },
+        [deleteUser.fulfilled]:(state, action)=>{
+            state.loading = false
+
+            const {id} = action.payload
+            if(id){
+                state.users = state.users.filter((ele)=> ele.id!==id);
+            }
+            console.log('Delete',action.payload)
+            
+        },
+        [deleteUser.rejected]:(state, action)=>{
+            state.loading = false
+            state.error = action
+        },
+        [updateUser.pending]:(state)=>{
+            state.loading = true
+        },
+        [updateUser.fulfilled]:(state, action)=>{
+            state.loading = false
+            // state.users = state.users.map((data)=>{
+            //    return data.id == action.payload.id ? action.payload : data
+            // })
+            state.users = state.users.map(e=>{
+                // if(e.id == action.payload.id){
+                //     return action.payload
+                // }else{ return e }
+                return e.id === action.payload.id ? action.payload : e}
+            )
+
+            console.log('data',state.users)
+        },
+        [updateUser.rejected]:(state, action)=>{
+            state.loading = false
+            state.error = action.payload
         }
     }
 })
