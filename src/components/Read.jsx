@@ -10,7 +10,7 @@ const Read = () => {
 
     const [id, setId] = useState();
 
-    const {users, loading} = useSelector((state)=>state.app)
+    const {users, loading, searchData} = useSelector((state)=>state.app)
 
     const [showPopup, setShowPopup] = useState(false);
     useEffect(()=>{
@@ -26,7 +26,15 @@ const Read = () => {
         {showPopup && <CustomModal id={id} showPopup={showPopup} setShowPopup={setShowPopup}/>}
         <h2>ALL Data</h2>
         {users && 
-            users.map((ele)=>(
+            users
+            .filter((ele)=>{
+                if(searchData.length==0){
+                    return ele
+                }else{
+                    return ele.name.toLowerCase().includes(searchData.toLowerCase());
+                }
+            })
+            .map((ele)=>(
             <div key={ele.id} className="card">
             <div className="card-body">
                 <h5 className="card-title">{ele.name}</h5>

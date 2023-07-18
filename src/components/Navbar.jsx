@@ -1,11 +1,18 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-// import { Link } from "react-router-dom";
+import { searchUser } from '../Features/userDetailSlice';
+// import  searchUser  from '../Features/userDetailSlice';
 
 const Navbar = () => {
 
   const allUsers = useSelector((state)=>state.app.users)
+  const dispatch = useDispatch();
+  const [searchData, setSearchData] = useState(''); 
+
+  useEffect(()=>{
+    dispatch(searchUser(searchData));
+  },[searchData])
 
   return (
     <div>
@@ -31,8 +38,8 @@ const Navbar = () => {
               type="search"
               placeholder="Search"
               aria-label="Search"
-            //   value={searchData}
-            //   onChange={(e) => setSearchData(e.target.value)}
+              value={searchData}
+              onChange={(e) => setSearchData(e.target.value)}
             />
           </div>
         </div>
