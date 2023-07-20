@@ -9,6 +9,7 @@ const Read = () => {
     const dispatch = useDispatch();
 
     const [id, setId] = useState();
+    const [radioData, setRadioData] = useState('All');
 
     const {users, loading, searchData} = useSelector((state)=>state.app)
 
@@ -25,6 +26,12 @@ const Read = () => {
     <div>
         {showPopup && <CustomModal id={id} showPopup={showPopup} setShowPopup={setShowPopup}/>}
         <h2>ALL Data</h2>
+        <input className="form-check-input" name='gender' value='All' type="radio" checked={radioData==='All'} onChange={(e)=>setRadioData('All')}/>
+            <label className="form-check-label">All</label>
+        <input className="form-check-input" name='gender' value='Male' type="radio" checked={radioData==='Male'} onChange={(e)=>setRadioData(e.target.value)}/>
+            <label className="form-check-label">Male</label>
+        <input className="form-check-input" name='gender' value='Female' type="radio" checked={radioData==='Female'} onChange={(e)=>setRadioData(e.target.value)}/>
+            <label className="form-check-label">Female</label>
         {users && 
             users
             .filter((ele)=>{
@@ -32,6 +39,16 @@ const Read = () => {
                     return ele
                 }else{
                     return ele.name.toLowerCase().includes(searchData.toLowerCase());
+                }
+            })
+            .filter((ele)=>{
+                if(radioData==='Male'){
+                    return ele.gender === radioData
+                }
+                else if(radioData==='Female'){
+                    return ele.gender === radioData
+                }else{
+                    return ele
                 }
             })
             .map((ele)=>(
